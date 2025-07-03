@@ -1,0 +1,15 @@
+apiVersion: v2
+name: App-HelmChart
+description: My Helm chart for k8s
+version: 0.1.0
+appVersion: "1.2.3"
+
+keywords:
+  - apache
+  - nginx
+  - tomcat
+
+maintainers:
+  - name: Edgar
+    email: blablabla@mail.ru
+    url: www.blabla.com

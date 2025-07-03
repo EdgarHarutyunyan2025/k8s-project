@@ -1,0 +1,62 @@
+frontend:
+  enabled: true
+  replicas: 1
+  image: edo1997edo/api_front:v1
+  containerPort: 80
+  servicePort: 3000
+  resources:
+    limits:
+      cpu: "250m"
+      memory: "128Mi"
+    requests:
+      cpu: "250m"
+      memory: "64Mi"
+
+
+
+
+backend:
+  enabled          : true
+  replicas         : 1
+  matchLabels      : backend
+  image            : edo1997edo/my_back:v1
+  containerPort    : 7000
+  servicePort      : 7000
+  backEnvConfigMap : back-env
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "256Mi"
+    requests:
+      cpu: "200m"
+      memory: "128Mi"
+
+
+
+
+
+db:
+  enabled        : true
+  image          : postgres:14
+  containerPort  : 5432
+  dbEnvConfigMap : db-env
+  secretName     : db-secret
+  secretKey      : POSTGRES_PASSWORD
+  pvc            :
+    claimName    : db-pvc
+    size         : 1Gi
+    accessModes:
+      - ReadWriteOnce
+  storageClass:
+    name              : my-dynamic-sc
+    provisioner       : k8s.io/minikube-hostpath
+    volumeBindingMode : Immediate
+
+
+ingress:
+  name: my-ingress
+  host: myapp.local
+  path: /
+  frontsvcport: 3000
+  pathType: Prefix
+  ingressClassName: nginx

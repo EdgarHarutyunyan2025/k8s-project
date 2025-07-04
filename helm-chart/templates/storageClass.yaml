@@ -4,4 +4,7 @@ metadata:
   name: {{ .Values.db.storageClass.name }}
 provisioner: {{ .Values.db.storageClass.provisioner }}
 volumeBindingMode: {{ .Values.db.storageClass.volumeBindingMode }}
-
+allowVolumeExpansion: {{ .Values.db.storageClass.allowVolumeExpansion }}
+parameters:
+  type: {{ .Values.db.storageClass.type }}
+  fsType: {{ .Values.db.storageClass.fsType }}

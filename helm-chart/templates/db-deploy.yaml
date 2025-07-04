@@ -18,10 +18,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: zone
+              - key: topology.kubernetes.io/zone
                 operator: In
                 values:
-                - zone-3
+                - eu-central-1b
       containers:
         - name: postgres
           image: {{ .Values.db.image }}
@@ -31,10 +31,10 @@ spec:
             - configMapRef:
                 name: {{ .Values.db.dbEnvConfigMap }}
           env:
-            - name: DB_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.secretName }}
+                  name: db-secret
                   key: POSTGRES_PASSWORD
           volumeMounts:
             - name: postgres-storage

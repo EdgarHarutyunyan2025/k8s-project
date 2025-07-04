@@ -32,6 +32,6 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.db.secretName }}
-                  key: {{ .Values.db.secretKey }}
+                  name: db-secret
+                  key: POSTGRES_PASSWORD
 {{- end }}

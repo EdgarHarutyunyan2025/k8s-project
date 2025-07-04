@@ -40,17 +40,18 @@ db:
   image          : postgres:14
   containerPort  : 5432
   dbEnvConfigMap : db-env
-  secretName     : db-secret
-  secretKey      : POSTGRES_PASSWORD
   pvc            :
     claimName    : db-pvc
     size         : 1Gi
     accessModes:
       - ReadWriteOnce
   storageClass:
-    name              : my-dynamic-sc
-    provisioner       : k8s.io/minikube-hostpath
-    volumeBindingMode : Immediate
+    name                : my-dynamic-sc
+    provisioner         : ebs.csi.aws.com
+    volumeBindingMode   : Immediate
+    allowVolumeExpansion: true
+    type                : gp3
+    fsType              : ext4
 
 
 ingress:

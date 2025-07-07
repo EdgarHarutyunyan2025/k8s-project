@@ -1,96 +1,41 @@
-variable "eks_cluster_name" {
-  #  default = aws_eks_cluster.eks_cluster.name
-  default = "eks"
-}
-#======== PROVIDERS ========
-
-variable "kubernetes_provider_host" {
-  default = ""
-}
-
-variable "kubernetes_cluster_ca_certificate" {
-  default = ""
-}
-
-variable "kubernetes_provider_token" {
-  default = ""
-}
-
-variable "oidc_provider_url" {
-  default = ""
-}
-
-
-#========NGINX INGRESS CONTROLER========
-
-variable "nginx_ingress_name" {
-  default = "nginx-ingress"
-}
-
-variable "nginx_ingress_namespace" {
-  default = "nginx-ingress"
-}
-
-variable "nginx_ingress_chart" {
-  default = "nginx-ingress"
-}
-
-variable "nginx_ingress_repository" {
-  default = "https://kubernetes.github.io/ingress-nginx"
-}
-
-variable "nginx_create_namespace" {
-  default = true
-}
-
 # =========EBS DRIVER==========
 
 
-variable "ebs_driver_name" {
+variable "application_name" {
   default = "aws-ebs-csi-driver"
 }
 
-variable "ebs_driver_namespace" {
+variable "application_namespace" {
   default = "kube-system"
 }
 
-variable "ebs_driver_chart" {
+variable "application_chart" {
   default = "aws-ebs-csi-driver"
 }
 
-variable "ebs_driver_version" {
+variable "application_version" {
   default = "2.45.1"
 }
 
-variable "ebs_driver_repository" {
+variable "application_repository" {
   default = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
 }
 
-
-
-#=======ARGOCD========
-
-
-variable "argocd_name" {
-  default = "argocd"
+variable "application_create_namespace" {
+  default = false
 }
 
-variable "argocd_namespace" {
-  default = "argocd"
+variable "application_values" {
+  type = list(string)
+  default = [
+    <<-EOT
+  controller:
+    serviceAccount:
+      name: ebs-csi-controller-sa
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/AmazonEKS_EBS_CSI_DriverRole
+  EOT
+  ]
 }
 
-variable "argocd_repository" {
-  default = "https://argoproj.github.io/argo-helm"
-}
-
-variable "argocd_chart" {
-  default = "argo-cd"
-}
-
-variable "argocd_version" {
-  default = "5.0.0"
-}
-
-variable "argocd_create_namespace" {
-  default = true
-}

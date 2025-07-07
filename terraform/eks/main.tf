@@ -1,7 +1,4 @@
-provider "aws" {
-  region = var.region
-}
-
+#======= EKS CLUSTER =======
 
 module "eks-cluster" {
   source               = "../modules/eks"
@@ -21,50 +18,78 @@ module "eks-cluster" {
 }
 
 
-#========HELM========
-
-#data "aws_eks_cluster" "cluster" {
-#  name = module.eks-cluster.eks_cluster_name
-#}
-#
-#
-#data "aws_eks_cluster_auth" "cluster_auth" {
-#  name = module.eks-cluster.eks_cluster_name
-#}
+#======== OIDC TOKEN ========
 
 
+module "oidec_token" {
+  source = "../modules/oidc_role"
 
-#module "helm" {
-#  source = "./helm"
-#
-#  oidc_provider_url = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
-#
-#  kubernetes_provider_host          = data.aws_eks_cluster.cluster.endpoint
-#  kubernetes_cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-#  kubernetes_provider_token         = data.aws_eks_cluster_auth.cluster_auth.token
-#
-#
-#  eks_cluster_name = module.eks-cluster.eks_cluster_name
-#
-#  ebs_driver_name       = "aws-ebs-csi-driver"
-#  ebs_driver_namespace  = "kube-system"
-#  ebs_driver_chart      = "aws-ebs-csi-driver"
-#  ebs_driver_version    = "2.45.1"
-#  ebs_driver_repository = "https://kubernetes-sigs.github.io/aws-ebs-csi-driver"
-#
-#
-#  nginx_ingress_name       = "nginx-ingress"
-#  nginx_ingress_namespace  = "ingress-nginx"
-#  nginx_ingress_chart      = "ingress-nginx"
-#  nginx_ingress_repository = "https://kubernetes.github.io/ingress-nginx"
-#  nginx_create_namespace   = true
-#
-#  argocd_name             = "argocd"
-#  argocd_namespace        = "argocd"
-#  argocd_repository       = "https://argoproj.github.io/argo-helm"
-#  argocd_chart            = "argo-cd"
-#  argocd_version          = "5.0.0"
-#  argocd_create_namespace = true
-#
-#}
-#
+  oidc_provider_url         = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+  service_account_name      = var.service_account_name
+  service_account_namespace = var.service_account_namespace
+}
+
+
+#======== EBS DRIVER ========
+
+module "helm" {
+  source = "../modules/helm"
+
+  providers = {
+    helm = helm.eks
+  }
+
+  application_name             = var.ebs_driver_name
+  application_namespace        = var.ebs_driver_namespace
+  application_chart            = var.ebs_driver_chart
+  application_version          = var.ebs_driver_version
+  application_repository       = var.ebs_driver_repository
+  application_create_namespace = var.ebs_driver_create_namespace
+  #application_values           = var.helm_values_ebs
+  application_values = [
+    <<-EOT
+  controller:
+    serviceAccount:
+      name: ebs-csi-controller-sa
+      create: true
+      annotations:
+        eks.amazonaws.com/role-arn: ${module.oidec_token.ebs_csi_role_arn}
+  EOT
+  ]
+}
+
+
+#======== NGINC CONTROLER ========
+
+module "nginx_controler" {
+  source = "../modules/helm"
+
+  providers = {
+    helm = helm.eks
+  }
+
+  application_name             = var.nginx_controler_name
+  application_namespace        = var.nginx_controler_namespace
+  application_chart            = var.nginx_controler_chart
+  application_version          = var.nginx_controler_version
+  application_repository       = var.nginx_controler_repository
+  application_create_namespace = var.nginx_controler_create_namespace
+  application_values           = var.helm_values_nginx
+}
+
+#======== ARGO CD ========
+
+module "argocd" {
+  source = "../modules/helm"
+
+  providers = {
+    helm = helm.eks
+  }
+  application_name             = var.argocd_name
+  application_namespace        = var.argocd_namespace
+  application_chart            = var.argocd_chart
+  application_version          = var.argocd_version
+  application_repository       = var.argocd_repository
+  application_create_namespace = var.argocd_create_namespace
+  application_values           = var.helm_values_argocd
+}

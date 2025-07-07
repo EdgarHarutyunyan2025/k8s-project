@@ -1,7 +1,7 @@
 #======= EKS CLUSTER =======
 
 module "eks-cluster" {
-  source               = "../modules/eks"
+  source               = "git::https://github.com/EdgarHarutyunyan2025/k8s-project.git//terraform/modules/eks?ref=main"
   eks_cluter_name      = var.eks_cluter_name
   eks_vpc              = var.eks_vpc
   eks_subnet_count     = var.eks_subnet_count
@@ -22,7 +22,7 @@ module "eks-cluster" {
 
 
 module "oidec_token" {
-  source = "../modules/oidc_role"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project.git//terraform/modules/oidc_role?ref=main"
 
   oidc_provider_url         = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
   service_account_name      = var.service_account_name
@@ -33,7 +33,7 @@ module "oidec_token" {
 #======== EBS DRIVER ========
 
 module "helm" {
-  source = "../modules/helm"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project.git//terraform/modules/helm?ref=main"
 
   providers = {
     helm = helm.eks
@@ -45,7 +45,6 @@ module "helm" {
   application_version          = var.ebs_driver_version
   application_repository       = var.ebs_driver_repository
   application_create_namespace = var.ebs_driver_create_namespace
-  #application_values           = var.helm_values_ebs
   application_values = [
     <<-EOT
   controller:
@@ -62,7 +61,7 @@ module "helm" {
 #======== NGINC CONTROLER ========
 
 module "nginx_controler" {
-  source = "../modules/helm"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project.git//terraform/modules/helm?ref=main"
 
   providers = {
     helm = helm.eks
@@ -80,7 +79,7 @@ module "nginx_controler" {
 #======== ARGO CD ========
 
 module "argocd" {
-  source = "../modules/helm"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project.git//terraform/modules/helm?ref=main"
 
   providers = {
     helm = helm.eks

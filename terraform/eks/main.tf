@@ -1,7 +1,8 @@
 #======= VPC  =======
 
 module "vpc" {
-  source               = "../modules/eks/vpc"
+  #source               = "../modules/eks/vpc"
+  source               = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/vpc"
   eks_vpc              = var.eks_vpc
   eks_subnet_count     = var.eks_subnet_count
   enable_dns_hostnames = var.enable_dns_hostnames
@@ -11,7 +12,7 @@ module "vpc" {
 #======= EKS CLUSTER =======
 
 module "eks-cluster" {
-  source                        = "../modules/eks/cluster"
+  source                        = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/cluster"
   eks_cluter_name               = var.eks_cluter_name
   eks_enabled_cluster_log_types = var.eks_enabled_cluster_log_types
   eks_cluter_role_arn           = module.eks_cluster_role.role_arn
@@ -23,7 +24,7 @@ module "eks-cluster" {
 #======= NODE GROUP =======
 
 module "node-group" {
-  source                    = "../modules/eks/node_group"
+  source                    = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/node_group"
   cluster_name              = module.eks-cluster.eks_cluster_name
   node_group_name           = var.node_group_name
   node_role_arn             = module.eks_worker_role.role_arn
@@ -42,7 +43,7 @@ module "node-group" {
 #======= EKS SG =======
 
 module "eks-sg" {
-  source      = "../modules/eks/security_group/"
+  source      = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/security_group"
   vpc_id      = module.vpc.vpc_id
   cidr_blocks = [module.vpc.cidr_block]
   ports       = var.ports
@@ -52,20 +53,20 @@ module "eks-sg" {
 #======= CLUSTER ROLE & POLICY =======
 
 module "eks_cluster_role" {
-  source    = "../modules/eks/role"
+  source    = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role"
   role_name = var.cluster_role_name
   service   = var.cluster_service
   action    = var.cluster_action
 }
 
 module "eks_cluster_policy" {
-  source     = "../modules/eks/role_policy"
+  source     = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role_policy"
   policy_arn = var.cluster_policy_arn
   role       = module.eks_cluster_role.role_name
 }
 
 module "eks_service_policy" {
-  source     = "../modules/eks/role_policy"
+  source     = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role_policy"
   policy_arn = var.cluster_service_policy_arn
   role       = module.eks_cluster_role.role_name
 }
@@ -74,26 +75,26 @@ module "eks_service_policy" {
 
 
 module "eks_worker_role" {
-  source    = "../modules/eks/role"
+  source    = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role"
   role_name = var.node_role_name
   service   = var.node_service
   action    = var.node_action
 }
 
 module "eks_worker_policy" {
-  source     = "../modules/eks/role_policy"
+  source     = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role_policy"
   policy_arn = var.worker_policy_arn
   role       = module.eks_worker_role.role_name
 }
 
 module "container_Registry_policy" {
-  source     = "../modules/eks/role_policy"
+  source     = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role_policy"
   policy_arn = var.registry_policy_arn
   role       = module.eks_worker_role.role_name
 }
 
 module "cni_policy" {
-  source     = "../modules/eks/role_policy"
+  source     = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/role_policy"
   policy_arn = var.cni_policy_arn
   role       = module.eks_worker_role.role_name
 }
@@ -102,8 +103,7 @@ module "cni_policy" {
 
 
 module "oidec_token" {
-  source = "../modules/oidc_role"
-
+  source                    = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/oidc_role"
   oidc_provider_url         = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
   service_account_name      = var.service_account_name
   service_account_namespace = var.service_account_namespace
@@ -113,7 +113,7 @@ module "oidec_token" {
 #======== EBS DRIVER ========
 
 module "helm" {
-  source = "../modules/helm"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/helm"
 
   providers = {
     helm = helm.eks
@@ -144,7 +144,7 @@ module "helm" {
 #======== NGINC CONTROLER ========
 
 module "nginx_controler" {
-  source = "../modules/helm"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/helm"
 
   providers = {
     helm = helm.eks
@@ -164,7 +164,7 @@ module "nginx_controler" {
 #======== ARGO CD ========
 
 module "argocd" {
-  source = "../modules/helm"
+  source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/helm"
 
   providers = {
     helm = helm.eks

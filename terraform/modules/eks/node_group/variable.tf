@@ -1,31 +1,22 @@
-variable "region" {
-  default = "eu-central-1"
+variable "cluster_name" {
+  default = ""
 }
 
-#=====EKS VPC=====
-
-variable "eks_vpc" {
-  default = "10.0.0.0/16"
+variable "node_role_arn" {
+  default = ""
 }
 
-variable "eks_subnet_count" {
-  default = 2
+variable "subnet_ids" {
+  default = ""
 }
 
-variable "enable_dns_hostnames" {
-  default = true
+variable "source_security_group_ids" {
+  type    = list(string)
+  default = []
 }
 
-variable "enable_dns_support" {
-  default = true
-}
-
-
-#=====EKS CLUSTER=====
-
-
-variable "eks_cluter_name" {
-  default = "my-eks-cluster"
+variable "worker_Node_Policy" {
+  default = ""
 }
 
 variable "node_group_name" {
@@ -59,5 +50,3 @@ variable "node_ec2_ssh_key" {
 variable "node_sg_ports" {
   default = ["80", "443"]
 }
-
-

@@ -1,5 +1,5 @@
 resource "aws_security_group" "eks_worker_sg" {
-  vpc_id = aws_vpc.eks_vpc.id
+  vpc_id = var.vpc_id
   ingress {
     from_port = 0
     to_port   = 0
@@ -10,15 +10,15 @@ resource "aws_security_group" "eks_worker_sg" {
     from_port   = "22"
     to_port     = "22"
     protocol    = "tcp"
-    cidr_blocks = [aws_vpc.eks_vpc.cidr_block]
+    cidr_blocks = var.cidr_blocks
   }
   dynamic "ingress" {
-    for_each = var.node_sg_ports
+    for_each = var.ports
     content {
       from_port   = ingress.value
       to_port     = ingress.value
-      protocol    = "tcp"
-      cidr_blocks = [aws_vpc.eks_vpc.cidr_block]
+      protocol    = var.protocol
+      cidr_blocks = var.cidr_blocks
     }
   }
   egress {

@@ -1,15 +1,11 @@
-#======= EKS CLUSTER =======
+#======= VPC =======
 
 variable "region" {
   default = "eu-central-1"
 }
 
-variable "eks_cluter_name" {
-  default = "my-eks-cluster"
-}
-
 variable "eks_vpc" {
-  default = "10.10.0.0/16"
+  default = "10.0.0.0/16"
 }
 
 variable "eks_subnet_count" {
@@ -22,6 +18,18 @@ variable "enable_dns_hostnames" {
 
 variable "enable_dns_support" {
   default = true
+}
+
+
+#======= EKS CLUSTER =======
+
+variable "eks_cluter_name" {
+  default = "my-eks-cluster"
+}
+
+
+variable "eks_enabled_cluster_log_types" {
+  default = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 }
 
 
@@ -56,7 +64,67 @@ variable "node_ec2_ssh_key" {
   default = "eu-central-1-ec2-key"
 }
 
-#======= OIDC TOKEN =======
+#======= EKS SG =======
+
+variable "ports" {
+  default = ["80", "443"]
+}
+
+variable "protocol" {
+  default = "tcp"
+}
+
+#======= CLUSTER ROLE & POLICY =======
+
+variable "cluster_role_name" {
+  default = "eks-cluster-role"
+}
+
+variable "cluster_service" {
+  default = "eks.amazonaws.com"
+}
+
+variable "cluster_action" {
+  default = "sts:AssumeRole"
+}
+
+variable "cluster_policy_arn" {
+  default = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+}
+
+variable "cluster_service_policy_arn" {
+  default = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+}
+
+#======= NODE ROLE & POLICY =======
+
+
+variable "node_role_name" {
+  default = "eks-worker-role"
+}
+
+variable "node_service" {
+  default = "ec2.amazonaws.com"
+}
+
+variable "node_action" {
+  default = "sts:AssumeRole"
+}
+
+variable "worker_policy_arn" {
+  default = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+}
+
+variable "registry_policy_arn" {
+  default = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+variable "cni_policy_arn" {
+  default = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+}
+
+
+#======== OIDC TOKEN =======
 
 variable "service_account_name" {
   default = "ebs-csi-controller-sa"
@@ -65,6 +133,7 @@ variable "service_account_name" {
 variable "service_account_namespace" {
   default = "kube-system"
 }
+
 
 #======= HELM EBS DRIVER =======
 
@@ -91,7 +160,6 @@ variable "ebs_driver_repository" {
 variable "ebs_driver_create_namespace" {
   default = false
 }
-
 
 #======= HELM NGINX INGRESS =======
 

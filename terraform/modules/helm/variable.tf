@@ -1,5 +1,4 @@
-# =========EBS DRIVER==========
-
+# ========= HELM APPLICATION ==========
 
 variable "application_name" {
   default = "aws-ebs-csi-driver"
@@ -26,16 +25,7 @@ variable "application_create_namespace" {
 }
 
 variable "application_values" {
-  type = list(string)
-  default = [
-    <<-EOT
-  controller:
-    serviceAccount:
-      name: ebs-csi-controller-sa
-      create: true
-      annotations:
-        eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/AmazonEKS_EBS_CSI_DriverRole
-  EOT
-  ]
+  type    = list(string)
+  default = []
 }
 

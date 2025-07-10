@@ -235,3 +235,10 @@ variable "helm_values_argocd" {
   ]
 }
 
+
+
+#======= GITHUB CONTROLER =======
+
+variable "github_token" {
+  default = ""
+}

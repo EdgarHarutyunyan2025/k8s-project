@@ -1,7 +1,6 @@
 #======= VPC  =======
 
 module "vpc" {
-  #source               = "../modules/eks/vpc"
   source               = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/eks/vpc"
   eks_vpc              = var.eks_vpc
   eks_subnet_count     = var.eks_subnet_count
@@ -179,3 +178,65 @@ module "argocd" {
 
   depends_on = [module.node-group]
 }
+
+
+#======= CERT MANAGER =======
+
+module "cert_manager" {
+  source = "../modules/helm"
+
+  providers = {
+    helm = helm.eks
+  }
+
+  application_name             = "cert-manager"
+  application_namespace        = "cert-manager"
+  application_chart            = "cert-manager"
+  application_version          = "v1.18.2"
+  application_repository       = "https://charts.jetstack.io"
+  application_create_namespace = true
+  application_values = [
+    <<-EOT
+    installCRDs: true
+    EOT
+  ]
+
+}
+
+#======= ACTION RUNNER =======
+
+
+module "gitub_controler" {
+  source = "../modules/helm"
+
+  providers = {
+    helm = helm.eks
+  }
+
+  application_name             = "actions-runner-controller"
+  application_namespace        = "github-actions"
+  application_chart            = "actions-runner-controller"
+  application_version          = "0.23.5"
+  application_repository       = "https://actions-runner-controller.github.io/actions-runner-controller"
+  application_create_namespace = true
+  application_values = [
+    <<EOT
+    authSecret:
+      create: true
+      name: github-actions-runner-token
+      github_token: ${var.github_token}
+
+    certificates:
+      create: true
+      certSecretName: controller-serving-cert
+
+    rbac:
+      create: true
+
+    controller:
+      replicas: 1
+    EOT
+  ]
+  depends_on = [module.cert_manager]
+}
+

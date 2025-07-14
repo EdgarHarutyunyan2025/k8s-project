@@ -237,8 +237,62 @@ variable "helm_values_argocd" {
 
 
 
-#======= GITHUB CONTROLER =======
+#======= ACTION SYSTEM =======
+
+variable "arc-system-name" {
+  default = "arc-system"
+}
+
+variable "arc-system-namespace" {
+  default = "arc-test"
+}
+
+variable "arc-system-chart" {
+  default = "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller"
+}
+
+variable "arc-system-version" {
+  default = "0.12.1"
+}
+
+variable "arc-system-repository" {
+  default = ""
+}
+
+variable "arc-system-create_namespace" {
+  default = true
+}
+
+#======= ACTION RUNNER =======
 
 variable "github_token" {
   default = ""
+}
+
+variable "value_file_path" {
+  default = "/home/edgar/DevOps/kubernetes/my-project/action_runner/values.yaml"
+}
+
+variable "arc-runner-name" {
+  default = "arc-runner"
+}
+
+variable "arc-runner-namespace" {
+  default = "arc-runner"
+}
+
+variable "arc-runner-chart" {
+  default = "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set"
+}
+
+variable "arc-runner-version" {
+  default = "0.12.1"
+}
+
+variable "arc-runner-repository" {
+  default = ""
+}
+
+variable "arc-runner-create-namespace" {
+  default = true
 }

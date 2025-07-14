@@ -201,42 +201,49 @@ module "cert_manager" {
     EOT
   ]
 
+  depends_on = [module.node-group]
 }
 
-#======= ACTION RUNNER =======
+#======= ACTION SYSTEM =======
 
 
-module "gitub_controler" {
+module "arc-systems" {
   source = "../modules/helm"
 
   providers = {
     helm = helm.eks
   }
 
-  application_name             = "actions-runner-controller"
-  application_namespace        = "github-actions"
-  application_chart            = "actions-runner-controller"
-  application_version          = "0.23.5"
-  application_repository       = "https://actions-runner-controller.github.io/actions-runner-controller"
-  application_create_namespace = true
-  application_values = [
-    <<EOT
-    authSecret:
-      create: true
-      name: github-actions-runner-token
-      github_token: ${var.github_token}
+  application_name             = var.arc-system-name
+  application_namespace        = var.arc-system-namespace
+  application_chart            = var.arc-system-chart
+  application_version          = var.arc-system-version
+  application_repository       = var.arc-system-repository
+  application_create_namespace = var.arc-system-create_namespace
 
-    certificates:
-      create: true
-      certSecretName: controller-serving-cert
-
-    rbac:
-      create: true
-
-    controller:
-      replicas: 1
-    EOT
-  ]
-  depends_on = [module.cert_manager]
+  depends_on = [module.node-group]
 }
 
+
+#======= ACTION RUNNER =======
+
+
+module "arc-runner" {
+  source = "../modules/helm"
+
+  providers = {
+    helm = helm.eks
+  }
+
+  application_name             = var.arc-runner-name
+  application_namespace        = var.arc-runner-namespace
+  application_chart            = var.arc-runner-chart
+  application_version          = var.arc-runner-version
+  application_repository       = var.arc-runner-repository
+  application_create_namespace = var.arc-runner-create-namespace
+  application_values = [
+    file(var.value_file_path)
+  ]
+
+  depends_on = [module.node-group, module.arc-systems]
+}

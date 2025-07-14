@@ -20,11 +20,10 @@ releases:
         plain_http: false
         skip_dependency_update: false
       name: my-release
-      namespace: test
+      namespace: default
       tags:
-        - my-release@test
+        - my-release@default
       timeout: 5m0s
-      create_namespace: true
 lifecycle:
     pre_build: []
     post_build: []

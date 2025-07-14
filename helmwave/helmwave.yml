@@ -1,0 +1,11 @@
+project: "Example: single app multi envs"
+version: "0.41.4"
+
+releases:
+  - name: my-release
+    namespace: test
+    chart:
+      name: ../helm-chart
+    values:
+      - values/values.yml
+    create_namespace: true

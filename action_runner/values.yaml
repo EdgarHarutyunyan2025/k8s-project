@@ -41,7 +41,7 @@ template:
           mountPath: /home/runner/externals
     containers:
     - name: runner
-      image: ghcr.io/actions/actions-runner:latest
+      image: edo1997edo/test-helm:v2
       command: ["/home/runner/run.sh"]
       env:
         - name: DOCKER_HOST

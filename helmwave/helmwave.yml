@@ -7,5 +7,5 @@ releases:
     chart:
       name: ../helm-chart
     values:
-      - values/values.yml
+      - values.yml
     create_namespace: false

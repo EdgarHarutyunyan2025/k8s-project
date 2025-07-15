@@ -1,0 +1,38 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: full-access-to-resources
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "configmaps" , "persistentvolumeclaims", "services"]
+  verbs: ["get", "list", "create","update","patch"]
+
+- apiGroups: ["storage.k8s.io"]
+  resources: ["storageclasses"]
+  verbs: ["get", "list", "create","update","patch"]
+
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "create","update","patch"]
+
+- apiGroups: ["networking.k8s.io"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "create","update","patch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: full-access-to-resources-binding
+subjects:
+- kind: ServiceAccount
+  name: arc-runner-gha-rs-no-permission
+  namespace: arc-runner
+roleRef:
+  kind: ClusterRole
+  name: full-access-to-resources
+  apiGroup: rbac.authorization.k8s.io
+
+
+

@@ -1,11 +1,7 @@
 frontend:
   enabled: true
   replicas: 1
-<<<<<<< HEAD
-  image: edo1997edo/api_front:v2
-=======
-  image: edo1997edo/api_front:v8
->>>>>>> 3c321ec4b8e4e73d6ee59edebced380d95d9a7ef
+  image: edo1997edo/api_front:v3
   containerPort: 80
   servicePort: 3000
   resources:

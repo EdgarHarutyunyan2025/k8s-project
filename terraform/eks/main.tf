@@ -140,7 +140,7 @@ module "helm" {
 }
 
 
-#======== NGINC CONTROLER ========
+#======== NGINX CONTROLER ========
 
 module "nginx_controler" {
   source = "git::https://github.com/EdgarHarutyunyan2025/k8s-project//terraform/modules/helm"

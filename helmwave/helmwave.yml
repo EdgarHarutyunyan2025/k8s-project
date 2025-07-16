@@ -2,10 +2,18 @@ project: "Example: single app multi envs"
 version: "0.41.4"
 
 releases:
-  - name: my-release
+  - name: prod
     namespace: default
     chart:
       name: ../helm-chart
     values:
-      - values.yml
+      - prod-values.yml
     create_namespace: false
+
+  - name: dev
+    namespace: release-2
+    chart:
+      name: ../helm-chart
+    values:
+      - dev-values.yml
+    create_namespace: true

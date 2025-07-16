@@ -247,35 +247,3 @@ module "arc-runner" {
 
   depends_on = [module.node-group, module.arc-systems]
 }
-
-
-
-
-#======== HELMWAVE ========
-#
-#
-#resource "null_resource" "install_helmwave" {
-#  provisioner "local-exec" {
-#    command = <<EOT
-#      VERSION="v0.5.0"
-#      ARCH="amd64"
-#      wget -c https://github.com/helmwave/helmwave/releases/download/$VERSION/helmwave_${VERSION}_linux_${ARCH}.tar.gz -O - | tar -xz
-#      mv helmwave /usr/local/bin/helmwave  # Перемещаем бинарник в директорию для глобального использования
-#    EOT
-#  }
-#}
-
-
-
-#resource "helm_release" "helmwave" {
-#  name       = "helmwave"
-#  namespace  = "default"  # Задайте нужный namespace
-#  repository = "https://helmwave.github.io/helmwave"  # Репозиторий HelmWave
-#  chart      = "helmwave/helmwave"  # Чарт HelmWave
-#  version    = "0.5.0"  # Укажите нужную версию
-#
-#  values = [
-#    file("path/to/your/values.yaml")  # Укажите путь к вашему файлу значений, если нужно
-#  ]
-#}
-#

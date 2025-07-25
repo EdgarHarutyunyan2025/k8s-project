@@ -1,7 +1,7 @@
 frontend:
   enabled: true
   replicas: 1
-  image: edo1997edo/api_front:v3
+  image: edo1997edo/api_front:v5
     #image: 877680973630.dkr.ecr.eu-central-1.amazonaws.com/my-project:$v77
   containerPort: 80
   servicePort: 3000
